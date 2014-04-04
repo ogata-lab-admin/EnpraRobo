@@ -89,7 +89,7 @@ class EnpraRobo(OpenRTM_aist.DataFlowComponentBase):
 
 		self.rightMotor = 0
 		self.leftMotor = 0
-		self.servo = 0
+		self.servo = 90
 		 
 	##
 	#
@@ -201,15 +201,19 @@ class EnpraRobo(OpenRTM_aist.DataFlowComponentBase):
 		#
 		#
 	def onExecute(self, ec_id):
-		if self._leftMotorIn.isNew():
-			self.leftMotor = self._leftMotorIn.read().data
-		if self._rightMotorIn.isNew():
-			self.rightMotor = self._rightMotorIn.read().data
-		if self._servoIn.isNew():
-			self.servo = self._servoIn.read().data - 90
-		sys.stdout.write('%d,%d,%d=\n' % (self.leftMotor, self.rightMotor, self.servo))
-		self.serial.write('%d,%d,%d=' % (self.leftMotor, self.rightMotor, self.servo))
-		print serial.readline()
+		try:
+			if self._leftMotorIn.isNew():
+				self.leftMotor = self._leftMotorIn.read().data
+			if self._rightMotorIn.isNew():
+				self.rightMotor = self._rightMotorIn.read().data
+			if self._servoIn.isNew():
+				self.servo = self._servoIn.read().data - 90
+			sys.stdout.write('%d,%d,%d=\n' % (self.leftMotor, self.rightMotor, self.servo))
+			self.serial.write('%d,%d,%d=' % (self.leftMotor, self.rightMotor, self.servo))
+		#print serial.readline()
+		except:
+			traceback.print_exc()
+			return RTC.RTC_ERROR
 		return RTC.RTC_OK
 	
 	#	##
